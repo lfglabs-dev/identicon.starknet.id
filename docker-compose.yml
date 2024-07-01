@@ -1,0 +1,22 @@
+services:
+  identicon_server:
+    container_name: identicon_server
+    build: .
+    restart: always
+    environment:
+      NODE_ENV: production
+
+  nginx:
+    image: valian/docker-nginx-auto-ssl
+    restart: on-failure
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ssl_data:/etc/resty-auto-ssl
+    environment:
+      ALLOWED_DOMAINS: "identicon.starknet.id"
+      SITES: "identicon.starknet.id=identicon_server:3000"
+
+volumes:
+  ssl_data:
