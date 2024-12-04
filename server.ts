@@ -1,26 +1,26 @@
-import express from 'express';
-import Identicons from 'starknetid-identicons';
-import path from 'path';
+import express from "express";
+import Identicons from "starknetid-identicons";
+import path from "path";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8084;
 
 // Load the identicons.min.svg file
-const svgPath = path.join(__dirname, 'public', 'identicons.min.svg');
+const svgPath = path.join(__dirname, "public", "identicons.min.svg");
 Identicons.svgPath = svgPath;
 
 // Serve generated SVG image at the root URL
-app.get('/:tokenId', async (req, res) => {
+app.get("/:tokenId", async (req, res) => {
   const { tokenId } = req.params;
   if (!tokenId) {
-    return res.status(400).send('TokenId is required');
+    return res.status(400).send("TokenId is required");
   }
   try {
     const svg = await Identicons.svg(tokenId);
-    res.setHeader('Content-Type', 'image/svg+xml');
+    res.setHeader("Content-Type", "image/svg+xml");
     res.status(200).send(svg);
   } catch (error) {
-    res.status(500).send('Error generating SVG');
+    res.status(500).send("Error generating SVG");
   }
 });
 

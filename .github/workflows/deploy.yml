@@ -23,11 +23,19 @@ jobs:
           ssh -o StrictHostKeyChecking=no -T $SSH_USER@$SSH_HOST << EOF
             export REPO_PATH=$REPO_PATH
             export GIT_SSH_COMMAND='ssh -i ~/.ssh/github_read -o IdentitiesOnly=yes'
+            
+            # Configure AWS CLI
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            aws configure set default.region $AWS_DEFAULT_REGION
+
+            cd api.starknet.id/
+            sudo docker compose down identicon_server
+            cd ../
 
             if [ -d "\$REPO_PATH/.git" ]; then
               echo "Repository exists, pulling changes..."
               cd \$REPO_PATH
-              sudo docker compose down
               git reset --hard HEAD
               git pull
             else
@@ -37,8 +45,12 @@ jobs:
               cd \$REPO_PATH
             fi
 
+            # Use AWS CLI to copy configuration files from S3
             sudo chown -R \$SSH_USER:\$SSH_USER \$REPO_PATH
             sudo chmod -R 755 \$REPO_PATH
+            aws s3 cp s3://$AWS_PATH/ \$REPO_PATH --recursive
 
-            sudo docker compose up --build -d
+            cd ../api.starknet.id/
+            sudo docker compose up --build -d identicon_server
+
           EOF

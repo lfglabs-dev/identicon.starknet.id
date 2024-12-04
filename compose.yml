@@ -16,7 +16,7 @@ services:
       - ssl_data:/etc/resty-auto-ssl
     environment:
       ALLOWED_DOMAINS: "identicon.starknet.id"
-      SITES: "identicon.starknet.id=identicon_server:3000"
+      SITES: "identicon.starknet.id=identicon_server:8084"
 
 volumes:
   ssl_data:

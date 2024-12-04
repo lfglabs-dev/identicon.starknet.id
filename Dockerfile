@@ -30,5 +30,5 @@ COPY --from=prerelease /usr/src/app/package.json .
 
 # Run the app
 USER bun
-EXPOSE 3000/tcp
+EXPOSE 8084/tcp
 ENTRYPOINT [ "bun", "start" ]
